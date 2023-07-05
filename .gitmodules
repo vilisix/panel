@@ -1,0 +1,3 @@
+[submodule "hotline"]
+	path = hotline
+	url = https://github.com/vilisix/hotline
