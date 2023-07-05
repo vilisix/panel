@@ -1,3 +1,6 @@
-[submodule "hotline"]
-	path = hotline
+[submodule "libs/hotline"]
+	path = libs/hotline
 	url = https://github.com/vilisix/hotline
+[submodule "libs/pugixml"]
+	path = libs/pugixml
+	url = https://github.com/zeux/pugixml

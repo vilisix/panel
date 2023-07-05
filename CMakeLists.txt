@@ -8,11 +8,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build)
 
-add_subdirectory(hotline)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/hotline/src)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/hotline/libs/imgui)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/hotline/libs/imgui/backends)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/hotline/libs/glfw/include)
+add_subdirectory(libs/pugixml)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/pugixml/src)
+
+add_subdirectory(libs/hotline)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/hotline/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/hotline/libs/imgui)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/hotline/libs/imgui/backends)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/hotline/libs/glfw/include)
 
 ## Create panel executable
 add_executable(panel src/main.cpp)
@@ -23,4 +26,5 @@ target_link_libraries(
 	hotline
     glfw
     IMGUI
+	pugixml-static
 )
