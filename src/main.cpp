@@ -13,8 +13,10 @@
 #include <GLES2/gl2.h>
 #endif
 
+#include <filesystem>
 #include <iostream>
 #include <memory>
+#include <pugixml.hpp>
 #include <string>
 #include <vector>
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
@@ -126,6 +128,11 @@ int main(int, char **) {
     // you can modify config as you like here
     auto hotline = std::make_unique<Hotline::Hotline>(actionSet, std::move(hotlineConfig));
 
+    // todo move to panel class
+    std::filesystem::current_path("../");
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file("panel.xml");
+    doc.child("mesh").child("node").print(std::cout);
 
     // Main loop
 #ifdef __EMSCRIPTEN__
