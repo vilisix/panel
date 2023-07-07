@@ -28,14 +28,14 @@ void Panel::Panel::NormalUpdate() {
     ImGui::SetNextWindowSize(size);
     ImGui::Begin("Panel", 0, _config->windowFlags);
     ImVec2 windowSize = ImGui::GetContentRegionAvail();
-    ImGui::BeginChild("header", {windowSize.x * 0.8f, windowSize.y * 0.04f}, true, ImGuiWindowFlags_NoScrollbar);
+    ImGui::BeginChild("header", {windowSize.x * 0.8f, windowSize.y * 0.04f}, true, _config->windowFlags);
     ImGui::Text("Panel - lightweight framework for action executing with xml layout");
     ImGui::EndChild();
     ImGui::SameLine();
     if (ImGui::Button("Close", {ImGui::GetContentRegionAvail().x, windowSize.y * 0.04f})){
         Toggle();
     }
-    ImGui::BeginChild("Context", ImGui::GetContentRegionAvail(), true, ImGuiWindowFlags_NoResize);
+    ImGui::BeginChild("Context", ImGui::GetContentRegionAvail(), true, _config->windowFlags);
     _rootElement->Update();
     ImGui::EndChild();
     ImGui::End();
