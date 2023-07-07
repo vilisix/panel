@@ -24,6 +24,7 @@
 #include "ActionSet.h"
 #include "Hotline.h"
 #include "ArgProvider.h"
+#include "Panel.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -129,11 +130,13 @@ int main(int, char **) {
     auto hotline = std::make_unique<Hotline::Hotline>(actionSet, std::move(hotlineConfig));
 
     // todo move to panel class
-    std::filesystem::current_path("../");
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("panel.xml");
-    doc.child("mesh").child("node").print(std::cout);
+    // std::filesystem::current_path("../");
+    // pugi::xml_document doc;
+    // pugi::xml_parse_result result = doc.load_file("panel.xml");
+    // doc.child("mesh").child("node").print(std::cout);
+    auto panelConfig = std::make_unique<Panel::Config>();
 
+    auto panel = std::make_unique<Panel::Panel>(actionSet, std::move(panelConfig));
     // Main loop
 #ifdef __EMSCRIPTEN__
     // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
@@ -151,6 +154,9 @@ int main(int, char **) {
 
         //Hotline main input and textInput update cycle
         hotline->Update();
+
+        //Panel main update cycle
+        panel->Update();
 
         //  test info window
         ImGui::SetNextWindowPos({0.f, 0.f});

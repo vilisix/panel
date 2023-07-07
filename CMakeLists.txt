@@ -18,7 +18,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/hotline/libs/imgui/backends
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/hotline/libs/glfw/include)
 
 ## Create panel executable
-add_executable(panel src/main.cpp)
+add_executable(panel src/main.cpp src/Panel.h src/Panel.cpp src/ContextElement.h src/ContextElement.cpp)
 target_link_directories(panel PUBLIC main)
 target_link_libraries(
   panel
