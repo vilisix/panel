@@ -152,15 +152,9 @@ int main(int, char **) {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        //Hotline main input and textInput update cycle
-        hotline->Update();
-
-        //Panel main update cycle
-        panel->Update();
-
         //  test info window
         ImGui::SetNextWindowPos({0.f, 0.f});
-        ImGui::SetNextWindowBgAlpha(0.5f);
+        ImGui::SetNextWindowBgAlpha(0.2f);
         ImGui::Begin("InfoWindow", 0, ImGuiWindowFlags_NoTitleBar
                                       | ImGuiWindowFlags_NoMove
                                       | ImGuiWindowFlags_AlwaysAutoResize
@@ -172,6 +166,12 @@ int main(int, char **) {
             ImGui::Text(message.c_str());
         }
         ImGui::End();
+
+        //Hotline main input and textInput update cycle
+        hotline->Update();
+
+        //Panel main update cycle
+        panel->Update();
 
 
         // Rendering

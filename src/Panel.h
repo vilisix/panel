@@ -1,6 +1,7 @@
 #pragma once
 #include <imgui.h>
 #include <memory>
+#include "ContextElement.h"
 
 namespace Hotline {
 	class ActionSet;
@@ -23,7 +24,7 @@ namespace Panel {
         float childRounding = 8.0f;
         ImVec2 windowPos = {0.5f, 0.5f};   // relative to display size
         ImVec2 windowPivot = {0.5f, 0.5f};
-        ImVec2 windowSize = {0.9f, 0.9f};  // relative to display size
+        ImVec2 windowSize = {0.98f, 0.98f};  // relative to display size
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar
                                        | ImGuiWindowFlags_NoMove
                                        | ImGuiWindowFlags_AlwaysAutoResize
@@ -39,6 +40,7 @@ namespace Panel {
 
 		virtual ~Panel() = default;
 
+        void InitFromXml();
 		void NormalUpdate();
 		void ActionUpdate();
 		virtual void Update();
@@ -52,5 +54,7 @@ namespace Panel {
 		State _state = Inactive;
         std::shared_ptr<Hotline::ActionSet> _set;
         std::unique_ptr<Config> _config;
+
+        std::shared_ptr<ContextElement> _rootElement;
 	};
 }
