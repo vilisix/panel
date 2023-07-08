@@ -8,20 +8,28 @@ namespace Panel {
 	class ContextElement {
 	public:
         enum ContextElementState { Inactive, Active };
-
+        ContextElement();
+        explicit ContextElement(const std::string& name);
 		virtual ~ContextElement() = default;
 		virtual void Update() {}
 		virtual void HandleKeyInput() {}
         virtual void Reset() {}
+        std::string& GetName() { return _name; }
 		void SetActive(bool isActive);
 		void SetFocused(bool isFocused);
-	private:
+	protected:
+        std::string _name;
 		bool _isFocused = false;
 		ContextElementState _state = ContextElementState::Inactive;
 	};
 
 	class ContextElementGroup : public ContextElement {
 	public:
+        ContextElementGroup();
+        explicit ContextElementGroup(const std::string& name);
+        virtual ~ContextElementGroup() = default;
+
+        void Update() override;
         void AddElement(const std::string &name, std::shared_ptr<ContextElement> element);
 
         struct Element{
@@ -36,6 +44,8 @@ namespace Panel {
 
 	class HorizontalTabGroup : public ContextElementGroup {
     public:
+        HorizontalTabGroup();
+        explicit HorizontalTabGroup(const std::string& name);
         void Update() override;
         void HandleKeyInput() override;
         void Reset() override;
@@ -43,6 +53,9 @@ namespace Panel {
 
 	class VerticalTabGroup : public ContextElementGroup {
     public:
+        VerticalTabGroup();
+        explicit VerticalTabGroup(const std::string& name);
+
         void Update() override;
         void HandleKeyInput() override;
         void Reset() override;

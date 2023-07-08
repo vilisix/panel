@@ -1,5 +1,37 @@
 <?xml version="1.0"?>
-<mesh name="root">
-	<node attr1="value1">
-	</node>
-</mesh>
+<VerticalTabGroup name="root">
+	<HorizontalTabGroup name="alpha">
+		<ContextElementGroup name="Main">
+			<ButtonElement label="Hello World" action=""/>
+			<TextElement label="Sample Text"/>
+		</ContextElementGroup>
+		<ContextElementGroup name="Other"/>
+		<ContextElementGroup name="Special"/>
+		<ContextElementGroup name="Super Special"/>
+		<ContextElementGroup name="Very Super Special"/>
+	</HorizontalTabGroup>
+	<HorizontalTabGroup name="bravo">
+		<ContextElementGroup name="b1"/>
+		<ContextElementGroup name="b2"/>
+		<ContextElementGroup name="b3"/>
+	</HorizontalTabGroup>
+	<HorizontalTabGroup name="charlie">
+		<ContextElementGroup name="c1"/>
+		<ContextElementGroup name="c2"/>
+	</HorizontalTabGroup>
+	<HorizontalTabGroup name="delta">
+		<ContextElementGroup name="d1"/>
+		<ContextElementGroup name="d2"/>
+		<ContextElementGroup name="d3"/>
+	</HorizontalTabGroup>
+	<HorizontalTabGroup name="echo">
+		<ContextElementGroup name="e1"/>
+		<ContextElementGroup name="e2"/>
+		<ContextElementGroup name="e3"/>
+	</HorizontalTabGroup>
+		<HorizontalTabGroup name="foxtrot">
+		<ContextElementGroup name="f1"></ContextElementGroup>
+		<ContextElementGroup name="f2"></ContextElementGroup>
+		<ContextElementGroup name="f3"></ContextElementGroup>
+	</HorizontalTabGroup>
+</VerticalTabGroup>

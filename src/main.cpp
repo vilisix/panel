@@ -89,8 +89,8 @@ int main(int, char **) {
     //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
-    int width = 1920;
-    int height = 900;
+    int width = 1280;
+    int height = 720;
     float scaleFactor = (width / 1280.f) * (height / 720.f);
     GLFWwindow *window = glfwCreateWindow(width, height, "hotline example", nullptr, nullptr);
     if (window == nullptr)
@@ -129,11 +129,9 @@ int main(int, char **) {
     // you can modify config as you like here
     auto hotline = std::make_unique<Hotline::Hotline>(actionSet, std::move(hotlineConfig));
 
-    // todo move to panel class
-    // std::filesystem::current_path("../");
-    // pugi::xml_document doc;
-    // pugi::xml_parse_result result = doc.load_file("panel.xml");
-    // doc.child("mesh").child("node").print(std::cout);
+    // for xml path
+    std::filesystem::current_path("../");
+
     auto panelConfig = std::make_unique<Panel::Config>();
 
     auto panel = std::make_unique<Panel::Panel>(actionSet, std::move(panelConfig));
