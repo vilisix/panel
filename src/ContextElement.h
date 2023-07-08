@@ -3,11 +3,11 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "ActionSet.h"
 
 namespace Panel {
 	class ContextElement {
 	public:
-        enum ContextElementState { Inactive, Active };
         ContextElement();
         explicit ContextElement(const std::string& name);
 		virtual ~ContextElement() = default;
@@ -15,12 +15,8 @@ namespace Panel {
 		virtual void HandleKeyInput() {}
         virtual void Reset() {}
         std::string& GetName() { return _name; }
-		void SetActive(bool isActive);
-		void SetFocused(bool isFocused);
 	protected:
         std::string _name;
-		bool _isFocused = false;
-		ContextElementState _state = ContextElementState::Inactive;
 	};
 
 	class ContextElementGroup : public ContextElement {
@@ -30,11 +26,13 @@ namespace Panel {
         virtual ~ContextElementGroup() = default;
 
         void Update() override;
-        void AddElement(const std::string &name, std::shared_ptr<ContextElement> element);
+        void AddElement(const std::string &name, std::shared_ptr<ContextElement> element, const std::string& strKey = "", ImGuiKey hotkey = ImGuiKey_None);
 
         struct Element{
-            std::string _name;
-            std::shared_ptr<ContextElement> _element;
+            std::string name;
+            std::shared_ptr<ContextElement> element;
+            std::string stringKey;
+            ImGuiKey key;
         };
     protected:
 		int _selectedIndex = 0;
@@ -63,11 +61,12 @@ namespace Panel {
 
 	class ButtonElement : public ContextElement {
     public:
-        explicit ButtonElement(const std::string& label, const std::string& action);
+        explicit ButtonElement(const std::string& label, const std::string& action, std::shared_ptr<Hotline::ActionSet> set);
 
         void Update() override;
         void HandleKeyInput() override;
     private:
+        std::shared_ptr<Hotline::ActionSet> _set;
         std::string _action;
         std::string _label;
 	};

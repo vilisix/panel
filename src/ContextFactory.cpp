@@ -1,12 +1,18 @@
 #include "ContextFactory.h"
 
-std::shared_ptr<Panel::ContextElement> Panel::ContextFactory::InitContext(pugi::xml_node root) {
+std::shared_ptr<Panel::ContextElement> Panel::ContextFactory::InitContext(pugi::xml_node root, std::shared_ptr<Hotline::ActionSet> set) {
 	std::string rootName = root.name();
 	if (rootName == "VerticalTabGroup") {
 		auto element = std::make_shared<VerticalTabGroup>(root.attribute("name").as_string("group"));
 		for (pugi::xml_node child : root.children()) {
-			if (auto childContext = InitContext(child)) {
-				element->AddElement(childContext->GetName(), childContext);
+			if (auto childContext = InitContext(child, set)) {
+                std::string stringKey = child.attribute("key").as_string("None");
+                ImGuiKey hotkey = KeyFromString(stringKey);
+                if(hotkey == ImGuiKey_None){
+                    element->AddElement(childContext->GetName(), childContext);
+                }else{
+                    element->AddElement(childContext->GetName(), childContext, stringKey, hotkey);
+                }
 			}
 		}
 		return element;
@@ -15,7 +21,7 @@ std::shared_ptr<Panel::ContextElement> Panel::ContextFactory::InitContext(pugi::
 	if (rootName == "HorizontalTabGroup") {
 		auto element = std::make_shared<HorizontalTabGroup>(root.attribute("name").as_string("group"));
 		for (pugi::xml_node child : root.children()) {
-			if (auto childContext = InitContext(child)) {
+			if (auto childContext = InitContext(child, set)) {
 				element->AddElement(childContext->GetName(), childContext);
 			}
 		}
@@ -25,7 +31,7 @@ std::shared_ptr<Panel::ContextElement> Panel::ContextFactory::InitContext(pugi::
 	if (rootName == "ContextElementGroup") {
 		auto element = std::make_shared<ContextElementGroup>(root.attribute("name").as_string("group"));
 		for (pugi::xml_node child : root.children()) {
-			if (auto childContext = InitContext(child)) {
+			if (auto childContext = InitContext(child, set)) {
 				element->AddElement(childContext->GetName(), childContext);
 			}
 		}
@@ -34,7 +40,7 @@ std::shared_ptr<Panel::ContextElement> Panel::ContextFactory::InitContext(pugi::
 
 	if (rootName == "ButtonElement") {
 		auto element = std::make_shared<ButtonElement>(root.attribute("label").as_string("noName"),
-														root.attribute("action").as_string(""));
+														root.attribute("action").as_string(""), set);
 		return element;
 	}
 
@@ -44,4 +50,38 @@ std::shared_ptr<Panel::ContextElement> Panel::ContextFactory::InitContext(pugi::
 	}
 
 	return nullptr;
+}
+
+ImGuiKey Panel::ContextFactory::KeyFromString(const std::string &strKey) {
+    static std::map<std::string, ImGuiKey> strToKey{
+            {"None", ImGuiKey_None},
+            {"A", ImGuiKey_A},
+            {"B", ImGuiKey_B},
+            {"C", ImGuiKey_C},
+            {"D", ImGuiKey_D},
+            {"E", ImGuiKey_E},
+            {"F", ImGuiKey_F},
+            {"G", ImGuiKey_G},
+            {"H", ImGuiKey_H},
+            {"I", ImGuiKey_I},
+            {"J", ImGuiKey_J},
+            {"K", ImGuiKey_K},
+            {"L", ImGuiKey_L},
+            {"M", ImGuiKey_M},
+            {"N", ImGuiKey_N},
+            {"O", ImGuiKey_O},
+            {"P", ImGuiKey_P},
+            {"Q", ImGuiKey_Q},
+            {"R", ImGuiKey_R},
+            {"S", ImGuiKey_S},
+            {"T", ImGuiKey_T},
+            {"U", ImGuiKey_U},
+            {"V", ImGuiKey_V},
+            {"W", ImGuiKey_W},
+            {"X", ImGuiKey_X},
+            {"Y", ImGuiKey_Y},
+            {"Z", ImGuiKey_Z}
+    };
+
+    return strToKey[strKey];
 }

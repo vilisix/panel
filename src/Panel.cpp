@@ -44,7 +44,7 @@ void Panel::Panel::NormalUpdate() {
     ImGui::PopStyleColor();
     ImGui::PopStyleColor();
     ImGui::PopStyleColor();
-    ImGui::BeginChild("Context", ImGui::GetContentRegionAvail(), true, _config->windowFlags);
+    ImGui::BeginChild("Context", ImGui::GetContentRegionAvail(), false, _config->windowFlags);
     _rootElement->Update();
     ImGui::EndChild();
     ImGui::End();
@@ -52,10 +52,27 @@ void Panel::Panel::NormalUpdate() {
 }
 
 void Panel::Panel::ActionUpdate() {
-
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, _config->childRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, _config->frameRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, _config->windowRounding);
+    auto io = ImGui::GetIO();
+    ImVec2 position{io.DisplaySize.x * _config->windowPos.x, io.DisplaySize.y * _config->windowPos.y};
+    ImVec2 size{io.DisplaySize.x * _config->windowSize.x, io.DisplaySize.y * _config->windowSize.y};
+    ImGui::SetNextWindowPos(position, ImGuiCond_Always, _config->windowPivot);
+    ImGui::SetNextWindowSize(size);
+    ImGui::Begin("Panel", 0, _config->windowFlags);
+    auto updateResult = _set->UpdateActionToFill();
+    if (updateResult == Cancelled || updateResult == Provided) {
+        _state = Inactive;
+    }
+    ImGui::End();
+    ImGui::PopStyleVar(3);
 }
 
 void Panel::Panel::Update() {
+    if(_set->HaveActionToFill()){
+        _state = WaitingForAction;
+    }
     if (_state != WaitingForAction) {
         NormalUpdate();
     }else if (_state == WaitingForAction) {
@@ -93,5 +110,5 @@ void Panel::Panel::InitFromXml() {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file("panel.xml");
     auto root = doc.root();
-    _rootElement = std::move(ContextFactory::InitContext(doc.root().first_child()));
+    _rootElement = std::move(ContextFactory::InitContext(doc.root().first_child(), _set));
 }

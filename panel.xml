@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <VerticalTabGroup name="root">
-	<HorizontalTabGroup name="alpha">
+	<HorizontalTabGroup name="alpha" key="A">
 		<ContextElementGroup name="Main">
-			<ButtonElement label="Hello World" action=""/>
+			<ButtonElement label="One Parameter Hello" action="testOnePar Hello"/>
+			<ButtonElement label="One Parameter Empty" action="testOnePar"/>
+			<ButtonElement label="ZeroParameter" action="testZeroPar"/>
 			<TextElement label="Sample Text"/>
 		</ContextElementGroup>
 		<ContextElementGroup name="Other"/>
@@ -10,28 +12,28 @@
 		<ContextElementGroup name="Super Special"/>
 		<ContextElementGroup name="Very Super Special"/>
 	</HorizontalTabGroup>
-	<HorizontalTabGroup name="bravo">
+	<HorizontalTabGroup name="bravo" key="B">
 		<ContextElementGroup name="b1"/>
 		<ContextElementGroup name="b2"/>
 		<ContextElementGroup name="b3"/>
 	</HorizontalTabGroup>
-	<HorizontalTabGroup name="charlie">
+	<HorizontalTabGroup name="charlie" key="C">
 		<ContextElementGroup name="c1"/>
 		<ContextElementGroup name="c2"/>
 	</HorizontalTabGroup>
-	<HorizontalTabGroup name="delta">
+	<HorizontalTabGroup name="delta" key="D">
 		<ContextElementGroup name="d1"/>
 		<ContextElementGroup name="d2"/>
 		<ContextElementGroup name="d3"/>
 	</HorizontalTabGroup>
-	<HorizontalTabGroup name="echo">
+	<HorizontalTabGroup name="echo" key="E">
 		<ContextElementGroup name="e1"/>
 		<ContextElementGroup name="e2"/>
 		<ContextElementGroup name="e3"/>
 	</HorizontalTabGroup>
-		<HorizontalTabGroup name="foxtrot">
-		<ContextElementGroup name="f1"></ContextElementGroup>
-		<ContextElementGroup name="f2"></ContextElementGroup>
-		<ContextElementGroup name="f3"></ContextElementGroup>
+		<HorizontalTabGroup name="foxtrot" key="F">
+		<ContextElementGroup name="f1"/>
+		<ContextElementGroup name="f2"/>
+		<ContextElementGroup name="f3"/>
 	</HorizontalTabGroup>
 </VerticalTabGroup>
