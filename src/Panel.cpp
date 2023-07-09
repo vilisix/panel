@@ -5,12 +5,7 @@
 #include "ContextFactory.h"
 
 Panel::Panel::Panel(std::shared_ptr<Hotline::ActionSet> set)
-	: _set(std::move(set)), _config(std::make_unique<Config>()) {
-    InitFromXml();
-}
-
-Panel::Panel::Panel(std::shared_ptr<Hotline::ActionSet> set, std::unique_ptr<Config> config)
-	: _set(std::move(set)), _config(std::move(config)) {
+	: _set(std::move(set)) {
     InitFromXml();
 }
 
@@ -21,46 +16,49 @@ void Panel::Panel::NormalUpdate() {
         return;
     }
 
-    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, _config->childRounding);
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, _config->frameRounding);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, _config->windowRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, config.childRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, config.frameRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, config.windowRounding);
     auto io = ImGui::GetIO();
-    ImVec2 position{io.DisplaySize.x * _config->windowPos.x, io.DisplaySize.y * _config->windowPos.y};
-    ImVec2 size{io.DisplaySize.x * _config->windowSize.x, io.DisplaySize.y * _config->windowSize.y};
-    ImGui::SetNextWindowPos(position, ImGuiCond_Always, _config->windowPivot);
+    ImVec2 position{io.DisplaySize.x * config.windowPos.x, io.DisplaySize.y * config.windowPos.y};
+    ImVec2 size{io.DisplaySize.x * config.windowSize.x, io.DisplaySize.y * config.windowSize.y};
+    ImGui::SetNextWindowPos(position, ImGuiCond_Always, config.windowPivot);
     ImGui::SetNextWindowSize(size);
-    ImGui::Begin("Panel", 0, _config->windowFlags);
-    ImVec2 windowSize = ImGui::GetContentRegionAvail();
-    ImGui::BeginChild("header", {windowSize.x * 0.8f, windowSize.y * 0.04f}, true, _config->windowFlags);
+    ImGui::Begin("Panel", 0, config.windowFlags);
+    ImGui::SetWindowFontScale(config.windowHeaderScale * config.scaleFactor);
+	ImVec2 windowSize = ImGui::GetContentRegionAvail();
+    ImGui::BeginChild("header", {windowSize.x * config.headerPanelSize.x, windowSize.y * config.headerPanelSize.y}, true, config.windowFlags);
     ImGui::Text("Panel - lightweight framework for action executing with xml layout");
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::PushStyleColor(ImGuiCol_Button, {0.8f, 0.2f, 0.25f, 0.8f});
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, {0.8f, 0.2f, 0.25f, 0.8f});
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, {0.8f, 0.2f, 0.25f, 0.8f});
-    if (ImGui::Button("Close", {ImGui::GetContentRegionAvail().x, windowSize.y * 0.04f})){
+    ImGui::PushStyleColor(ImGuiCol_Button, config.exitButtonColor);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, config.exitButtonHoveredColor);
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, config.exitButtonColor);
+    ImGui::SetWindowFontScale(config.windowFontScale * config.scaleFactor);
+    if (ImGui::Button("Close", {ImGui::GetContentRegionAvail().x, windowSize.y * config.headerPanelSize.y})){
         Toggle();
     }
-    ImGui::PopStyleColor();
-    ImGui::PopStyleColor();
-    ImGui::PopStyleColor();
-    ImGui::BeginChild("Context", ImGui::GetContentRegionAvail(), false, _config->windowFlags);
-    _rootElement->Update();
+    ImGui::PopStyleColor(3);
+
+    ImGui::BeginChild("Context", ImGui::GetContentRegionAvail(), true, config.windowFlags);
+    ImGui::SetWindowFontScale(1.0f);
+
+	_rootElement->Update();
     ImGui::EndChild();
     ImGui::End();
     ImGui::PopStyleVar(3);
 }
 
 void Panel::Panel::ActionUpdate() {
-    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, _config->childRounding);
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, _config->frameRounding);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, _config->windowRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, config.childRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, config.frameRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, config.windowRounding);
     auto io = ImGui::GetIO();
-    ImVec2 position{io.DisplaySize.x * _config->windowPos.x, io.DisplaySize.y * _config->windowPos.y};
-    ImVec2 size{io.DisplaySize.x * _config->windowSize.x, io.DisplaySize.y * _config->windowSize.y};
-    ImGui::SetNextWindowPos(position, ImGuiCond_Always, _config->windowPivot);
+    ImVec2 position{io.DisplaySize.x * config.windowPos.x, io.DisplaySize.y * config.windowPos.y};
+    ImVec2 size{io.DisplaySize.x * config.actionWindowSize.x, io.DisplaySize.y * config.actionWindowSize.y};
+    ImGui::SetNextWindowPos(position, ImGuiCond_Always, config.windowPivot);
     ImGui::SetNextWindowSize(size);
-    ImGui::Begin("Panel", 0, _config->windowFlags);
+    ImGui::Begin("Panel", 0, config.windowFlags);
     auto updateResult = _set->UpdateActionToFill();
     if (updateResult == Cancelled || updateResult == Provided) {
         _state = Inactive;
@@ -93,7 +91,7 @@ void Panel::Panel::Toggle() {
 }
 
 void Panel::Panel::HandleKeyInput() {
-    if (ImGui::IsKeyPressed(_config->toggleKey, false)) {
+    if (ImGui::IsKeyPressed(config.toggleKey, false)) {
         Toggle();
     }
 

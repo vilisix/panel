@@ -38,6 +38,16 @@ std::shared_ptr<Panel::ContextElement> Panel::ContextFactory::InitContext(pugi::
 		return element;
 	}
 
+    if (rootName == "ContextIndexedElementGroup") {
+		auto element = std::make_shared<ContextIndexedElementGroup>(root.attribute("name").as_string("group"));
+		for (pugi::xml_node child : root.children()) {
+			if (auto childContext = InitContext(child, set)) {
+				element->AddElement(childContext->GetName(), childContext);
+			}
+		}
+		return element;
+	}
+
 	if (rootName == "ButtonElement") {
 		auto element = std::make_shared<ButtonElement>(root.attribute("label").as_string("noName"),
 														root.attribute("action").as_string(""), set);
@@ -84,4 +94,21 @@ ImGuiKey Panel::ContextFactory::KeyFromString(const std::string &strKey) {
     };
 
     return strToKey[strKey];
+}
+
+ImGuiKey Panel::ContextFactory::KeyFromInt(int intKey) {
+	static std::map<int, ImGuiKey> intToKey{
+            {0, ImGuiKey_0},
+            {1, ImGuiKey_1},
+            {2, ImGuiKey_2},
+            {3, ImGuiKey_3},
+            {4, ImGuiKey_4},
+            {5, ImGuiKey_5},
+            {6, ImGuiKey_6},
+            {7, ImGuiKey_7},
+            {8, ImGuiKey_8},
+            {9, ImGuiKey_9},
+    };
+
+    return intToKey[intKey];
 }

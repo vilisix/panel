@@ -132,10 +132,10 @@ int main(int, char **) {
     // for xml path
     std::filesystem::current_path("../");
 
-    auto panelConfig = std::make_unique<Panel::Config>();
-
-    auto panel = std::make_unique<Panel::Panel>(actionSet, std::move(panelConfig));
-    // Main loop
+    Panel::config.scaleFactor = scaleFactor;
+    Panel::contextConfig.scaleFactor = scaleFactor;
+    auto panel = std::make_unique<Panel::Panel>(actionSet);
+	// Main loop
 #ifdef __EMSCRIPTEN__
     // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
     // You may manually call LoadIniSettingsFromMemory() to load settings from your own storage.
@@ -159,6 +159,7 @@ int main(int, char **) {
                                       | ImGuiWindowFlags_NoScrollbar);
         ImGui::SetWindowFontScale(scaleFactor);
         ImGui::Text("Press F1 to open hotline");
+        ImGui::Text("Press F2 to open panel");
         ImGui::Separator();
         for (const auto &message: infoMessages) {
             ImGui::Text(message.c_str());

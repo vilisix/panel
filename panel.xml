@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
 <VerticalTabGroup name="root">
 	<HorizontalTabGroup name="alpha" key="A">
-		<ContextElementGroup name="Main">
+		<ContextIndexedElementGroup name="Main">
 			<ButtonElement label="One Parameter Hello" action="testOnePar Hello"/>
 			<ButtonElement label="One Parameter Empty" action="testOnePar"/>
 			<ButtonElement label="ZeroParameter" action="testZeroPar"/>
 			<TextElement label="Sample Text"/>
-		</ContextElementGroup>
+			<ButtonElement label="ZeroParameterOther" action="testZeroPar"/>
+			<TextElement label="Sample Text"/>
+			<ButtonElement label="ZeroParameterAnother" action="testZeroPar"/>
+		</ContextIndexedElementGroup>
 		<ContextElementGroup name="Other"/>
 		<ContextElementGroup name="Special"/>
 		<ContextElementGroup name="Super Special"/>
