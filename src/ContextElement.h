@@ -38,13 +38,15 @@ namespace Panel {
         float verticalTabContextMinusOffset = 0.01f;
         ImVec4 tabSelectedColor = {0.15f, 0.15f, 0.15f, 1.0f};
         ImVec4 tabHotkeyColor = {0.5f, 0.5f, 0.5f, 1.0f};
+        ImVec4 buttonHotkeyColor = {0.8f, 0.8f, 0.8f, 1.0f};
 
     	//button
-        ImVec4 buttonHoveredColor = {0.3f, 0.3f, 0.3f, 1.0f};
-        ImVec4 buttonRegularColor = {0.25f, 0.25f, 0.25f, 1.0f};
-        ImVec4 buttonFocusedColor = {0.2f, 0.2f, 0.4f, 1.0f};
-        float buttonWidth = 0.5f;
+        ImVec4 buttonHoveredColor = {0.3f, 0.3f, 0.3f, 0.8f};
+        ImVec4 buttonRegularColor = {0.25f, 0.25f, 0.25f, 0.65f};
+        ImVec4 buttonFocusedColor = {0.2f, 0.2f, 0.4f, 0.7f};
+        ImVec4 buttonFocusedHoveredColor = {0.3f, 0.3f, 0.5f, 0.9f};
         float buttonHeight = 0.1f;
+
     };
 
     static ContextConfig contextConfig;
@@ -78,9 +80,10 @@ namespace Panel {
 
     class ButtonElement : public ContextElement {
     public:
-        explicit ButtonElement(const std::string& label, const std::string& action, std::shared_ptr<Hotline::ActionSet> set);
+        explicit ButtonElement(const std::string& label, float width, const std::string& action, std::shared_ptr<Hotline::ActionSet> set, std::function<void()> onClose);
 
         void Update() override;
+        void Reset() override;
         bool IsSelectable() override;
         void SetKey(const std::string& keyStr, ImGuiKey key);
     private:
@@ -88,6 +91,8 @@ namespace Panel {
         std::string _action;
         std::string _label;
         std::string _stringKey;
+        float _width = 0.5f;
+        std::function<void()> _onCloseCallback;
         ImGuiKey _key = ImGuiKey_None;
 	};
 
@@ -119,7 +124,7 @@ namespace Panel {
         void Update() override;
         void AddElement(const std::string &name, std::shared_ptr<ContextElement> element, const std::string& strKey = "", ImGuiKey hotkey = ImGuiKey_None) override;
     protected:
-		int _index = 0;
+		int _index = 1;
     };
 
 	class HorizontalTabGroup : public ContextElementGroup {
@@ -138,4 +143,8 @@ namespace Panel {
         void Update() override;
         void HandleKeyInput() override;
 	};
+
+    class SameLineElement : public ContextElement {
+        void Update() override;
+    };
 };

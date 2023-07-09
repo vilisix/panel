@@ -53,10 +53,16 @@ void Panel::ContextIndexedElementGroup::AddElement(const std::string& name, std:
 	ImGuiKey newKey = ImGuiKey_None;
 	if (element->IsSelectable()) {
 		if(auto buttonPtr = std::dynamic_pointer_cast<ButtonElement>(element)) {
-			newKey = ContextFactory::KeyFromInt(_index);
-			newStrKey = std::to_string(_index);
-			buttonPtr->SetKey(newStrKey, newKey);
-			_index++;
+            if(_index != 0){
+                newKey = ContextFactory::KeyFromInt(_index);
+                newStrKey = std::to_string(_index);
+                buttonPtr->SetKey(newStrKey, newKey);
+                if(_index == 9){
+                    _index = 0;
+                }else{
+                    _index++;
+                }
+            }
 		}
     }
 	_elements.push_back({name, std::move(element), newStrKey, newKey});
@@ -130,10 +136,12 @@ void Panel::HorizontalTabGroup::Update() {
 
 void Panel::HorizontalTabGroup::HandleKeyInput() {
     if (ImGui::IsKeyPressed(ImGuiKey_RightArrow, true)) {
+        _elements[_selectedIndex].element->Reset();
         _selectedIndex++;
         if(_selectedIndex == _elements.size()) _selectedIndex = 0;
     }
     if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow, true)) {
+        _elements[_selectedIndex].element->Reset();
         _selectedIndex--;
         if(_selectedIndex < 0) _selectedIndex = _elements.size() - 1;
     }
@@ -205,19 +213,30 @@ void Panel::VerticalTabGroup::HandleKeyInput() {
     }
 }
 
-Panel::ButtonElement::ButtonElement(const std::string& label, const std::string& action, std::shared_ptr<Hotline::ActionSet> set) : _action(action), _label(label), _set(set) {}
+Panel::ButtonElement::ButtonElement(const std::string& label, float width, const std::string& action, std::shared_ptr<Hotline::ActionSet> set, std::function<void()> onClose) : _action(action), _label(label), _width(width), _onCloseCallback(onClose), _set(set) {}
 
 void Panel::ButtonElement::Update() {
     auto contextMax = ImGui::GetContentRegionMax();
+    auto buttonBeginPos = ImGui::GetCursorPos();
+    if (_key != ImGuiKey_None) {
+        ImGui::SetWindowFontScale(contextConfig.windowHotkeyScale * contextConfig.scaleFactor);
+        ImGui::TextColored(contextConfig.buttonHotkeyColor, ("[" + _stringKey + "]").c_str());
+        ImGui::SetWindowFontScale(contextConfig.windowFontScale * contextConfig.scaleFactor);
+    }
+    ImGui::SetCursorPos(buttonBeginPos);
+
 	auto color = IsFocused() ? contextConfig.buttonFocusedColor : contextConfig.buttonRegularColor;
+	auto hoveredColor = IsFocused() ? contextConfig.buttonFocusedHoveredColor : contextConfig.buttonHoveredColor;
     ImGui::PushStyleColor(ImGuiCol_Button, color);
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, contextConfig.buttonHoveredColor);
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, hoveredColor);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, color);
-    if (ImGui::Button((_stringKey + _label).c_str(), {contextMax.x * contextConfig.buttonWidth, contextMax.y * contextConfig.buttonHeight})
+    if (ImGui::Button(_label.c_str(), {contextMax.x * _width, contextMax.y * contextConfig.buttonHeight})
 		|| (IsFocused() && ImGui::IsKeyPressed(ImGuiKey_Enter))) {
         _set->ExecuteAction(_action);
 		SetFocused(false);
+        _onCloseCallback();
     }
+
     ImGui::PopStyleColor(3);
 }
 
@@ -230,8 +249,16 @@ void Panel::ButtonElement::SetKey(const std::string& keyStr, ImGuiKey key) {
 	_stringKey = keyStr;
 }
 
+void Panel::ButtonElement::Reset() {
+    SetFocused(false);
+}
+
 Panel::TextElement::TextElement(const std::string &label) : _label(label) {}
 
 void Panel::TextElement::Update() {
     ImGui::Text(_label.c_str());
+}
+
+void Panel::SameLineElement::Update() {
+    ImGui::SameLine();
 }

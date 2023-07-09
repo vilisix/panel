@@ -2,13 +2,15 @@
 <VerticalTabGroup name="root">
 	<HorizontalTabGroup name="alpha" key="A">
 		<ContextIndexedElementGroup name="Main">
-			<ButtonElement label="One Parameter Hello" action="testOnePar Hello"/>
-			<ButtonElement label="One Parameter Empty" action="testOnePar"/>
-			<ButtonElement label="ZeroParameter" action="testZeroPar"/>
+			<ButtonElement label="One Parameter [empty]" width="0.31" action="testOnePar"/>
+			<SameLineElement/>
+			<ButtonElement label="Two Parameter [empty]" width="0.31" action="testTwoPar"/>
+			<SameLineElement/>
+			<ButtonElement label="Three Parameter [empty]" width="0.31" action="testThreePar"/>
 			<TextElement label="Sample Text"/>
-			<ButtonElement label="ZeroParameterOther" action="testZeroPar"/>
+			<ButtonElement label="Zero Parameter" action="testZeroPar"/>
 			<TextElement label="Sample Text"/>
-			<ButtonElement label="ZeroParameterAnother" action="testZeroPar"/>
+			<ButtonElement label="Two Parameter preset" action="testTwoPar hello 42"/>
 		</ContextIndexedElementGroup>
 		<ContextElementGroup name="Other"/>
 		<ContextElementGroup name="Special"/>

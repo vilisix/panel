@@ -108,5 +108,5 @@ void Panel::Panel::InitFromXml() {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file("panel.xml");
     auto root = doc.root();
-    _rootElement = std::move(ContextFactory::InitContext(doc.root().first_child(), _set));
+    _rootElement = std::move(ContextFactory::InitContext(doc.root().first_child(), _set, [&](){ Toggle(); }));
 }
