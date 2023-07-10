@@ -31,14 +31,26 @@ void Panel::Panel::NormalUpdate() {
     ImGui::Text("Panel - lightweight framework for action executing with xml layout");
     ImGui::EndChild();
     ImGui::SameLine();
+
+    auto cursorPointBeforeButton = ImGui::GetCursorPos();
+
     ImGui::PushStyleColor(ImGuiCol_Button, config.exitButtonColor);
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, config.exitButtonHoveredColor);
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, config.exitButtonColor);
     ImGui::SetWindowFontScale(config.windowFontScale * config.scaleFactor);
+
     if (ImGui::Button("Close", {ImGui::GetContentRegionAvail().x, windowSize.y * config.headerPanelSize.y})){
         Toggle();
     }
     ImGui::PopStyleColor(3);
+
+    auto cursorPointAfterButton = ImGui::GetCursorPos();
+
+	ImGui::SetWindowFontScale(contextConfig.windowHotkeyScale * contextConfig.scaleFactor);
+    ImGui::SetCursorPos(cursorPointBeforeButton);
+    ImGui::TextColored(config.hotkeyColor, ("[esc]"));
+	ImGui::SetWindowFontScale(contextConfig.windowFontScale * contextConfig.scaleFactor);
+    ImGui::SetCursorPos(cursorPointAfterButton);
 
     ImGui::BeginChild("Context", ImGui::GetContentRegionAvail(), true, config.windowFlags);
     ImGui::SetWindowFontScale(1.0f);
@@ -68,8 +80,13 @@ void Panel::Panel::ActionUpdate() {
 }
 
 void Panel::Panel::Update() {
-    if(_set->HaveActionToFill()){
+    if(_state != State::Inactive && _set->HaveActionToFill()){
         _state = WaitingForAction;
+    }
+    if(_state == WaitingForAction && !_set->HaveActionToFill())
+    {
+	    _state = Inactive;
+        return;
     }
     if (_state != WaitingForAction) {
         NormalUpdate();
@@ -78,8 +95,12 @@ void Panel::Panel::Update() {
     }
 }
 
-void Panel::Panel::Reset() {
+bool Panel::Panel::IsActive() {
+    return _state == WaitingForAction || _state == Active;
+}
 
+void Panel::Panel::Reset() {
+    _rootElement->Reset();
 }
 
 void Panel::Panel::Toggle() {
@@ -108,5 +129,5 @@ void Panel::Panel::InitFromXml() {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file("panel.xml");
     auto root = doc.root();
-    _rootElement = std::move(ContextFactory::InitContext(doc.root().first_child(), _set, [&](){ Toggle(); }));
+    _rootElement = std::move(ContextFactory::InitContext(doc.root().first_child(), _set, [&](){ _state = WaitingForAction; }));
 }

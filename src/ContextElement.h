@@ -41,8 +41,8 @@ namespace Panel {
         ImVec4 buttonHotkeyColor = {0.8f, 0.8f, 0.8f, 1.0f};
 
     	//button
-        ImVec4 buttonHoveredColor = {0.3f, 0.3f, 0.3f, 0.8f};
-        ImVec4 buttonRegularColor = {0.25f, 0.25f, 0.25f, 0.65f};
+        ImVec4 buttonHoveredColor = {0.35f, 0.35f, 0.35f, 0.8f};
+        ImVec4 buttonRegularColor = {0.3f, 0.3f, 0.3f, 0.65f};
         ImVec4 buttonFocusedColor = {0.2f, 0.2f, 0.4f, 0.7f};
         ImVec4 buttonFocusedHoveredColor = {0.3f, 0.3f, 0.5f, 0.9f};
         float buttonHeight = 0.1f;

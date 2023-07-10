@@ -134,6 +134,8 @@ int main(int, char **) {
 
     Panel::config.scaleFactor = scaleFactor;
     Panel::contextConfig.scaleFactor = scaleFactor;
+    argConfig.scaleFactor = scaleFactor;
+
     auto panel = std::make_unique<Panel::Panel>(actionSet);
 	// Main loop
 #ifdef __EMSCRIPTEN__
@@ -161,16 +163,21 @@ int main(int, char **) {
         ImGui::Text("Press F1 to open hotline");
         ImGui::Text("Press F2 to open panel");
         ImGui::Separator();
+        ImGui::Separator();
         for (const auto &message: infoMessages) {
             ImGui::Text(message.c_str());
         }
         ImGui::End();
 
         //Hotline main input and textInput update cycle
-        hotline->Update();
+        if (!panel->IsActive()) {
+			hotline->Update();
+        }
 
         //Panel main update cycle
-        panel->Update();
+        if (!hotline->IsActive()) {
+    		panel->Update();
+        }
 
 
         // Rendering

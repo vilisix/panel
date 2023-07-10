@@ -37,6 +37,7 @@ namespace Panel {
 		ImVec2 headerPanelSize = {0.8f, 0.04f}; // relative to window size
 		ImVec4 exitButtonColor = {0.8f, 0.2f, 0.25f, 0.8f};
 		ImVec4 exitButtonHoveredColor = {0.8f, 0.2f, 0.25f, 1.0f};
+		ImVec4 hotkeyColor = {0.6f, 0.6f, 0.6f, 1.0f};
 	};
 
 	static Config config;
@@ -51,6 +52,8 @@ namespace Panel {
 		void NormalUpdate();
 		void ActionUpdate();
 		virtual void Update();
+
+		bool IsActive();
 
 		void Reset();
 		void Toggle();
