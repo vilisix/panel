@@ -28,7 +28,7 @@ namespace Panel {
         ImVec2 windowPos = {0.5f, 0.5f};   // relative to display size
         ImVec2 windowPivot = {0.5f, 0.5f};
         ImVec2 windowSize = {0.98f, 0.98f};  // relative to display size
-        ImVec2 actionWindowSize = {0.7f, 0.5f};  // relative to display size
+        ImVec2 actionWindowSize = {0.7f, 0.7f};  // relative to display size
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar
                                        | ImGuiWindowFlags_NoMove
                                        | ImGuiWindowFlags_AlwaysAutoResize
