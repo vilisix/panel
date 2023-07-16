@@ -4,7 +4,7 @@
 #include "ContextElement.h"
 #include "IActionFrontend.h"
 
-namespace Hotline {
+namespace hotline {
 	class ActionSet;
 }
 
@@ -37,18 +37,18 @@ namespace Panel {
 
 	static Config config;
 
-	class Panel : public Hotline::IActionFrontend {
+	class Panel : public hotline::IActionFrontend {
 	public:
 		Panel();
 
-		void Draw(Hotline::ActionSet& set) override;
+		void Draw(hotline::ActionSet& set) override;
 		void Reset() override;
         void SetExitCallback(std::function<void()> callback) override;
 		
         void InitFromXml();
-	private:
+	protected:
         void HandleKeyInput();
-
+	private:
         std::shared_ptr<ContextElement> _rootElement;
         std::function<void()> _onExitCallback;
 	};

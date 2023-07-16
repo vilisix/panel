@@ -26,6 +26,7 @@
 #include "Hotline.h"
 #include "ArgProvider.h"
 #include "Panel.h"
+#include "ProviderWindow.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -110,7 +111,7 @@ int main(int, char **) {
 
 
     //  test action set for understanding how it works
-    auto actionSet = std::make_shared<Hotline::ActionSet>();
+    auto actionSet = std::make_shared<hotline::ActionSet>();
 
     actionSet->AddAction("testZeroPar", testFunctionZeroPar);
     actionSet->AddAction("testOnePar", testFunctionOnePar,
@@ -124,9 +125,9 @@ int main(int, char **) {
                          ArgProvider<bool>("IsActive"));
 
     //  instantiation of hotline
-	Hotline::hotlineConfig.scaleFactor = scaleFactor;
+	hotline::hotlineConfig.scaleFactor = scaleFactor;
     // you can modify config as you like here
-    auto hotline = std::make_unique<Hotline::Hotline>();
+    auto hotline = std::make_unique<hotline::Hotline>();
 
     // for xml path
     std::filesystem::current_path("../");
@@ -137,9 +138,10 @@ int main(int, char **) {
 
     auto panel = std::make_unique<Panel::Panel>();
 
-    auto manager = std::make_unique<Hotline::ActionManager>(actionSet);
-    manager->AddFrontend("hotline", std::move(hotline));
-    manager->AddFrontend("panel", std::move(panel));
+    auto manager = std::make_unique<hotline::ActionManager>(actionSet);
+    manager->SetProviderFrontend(std::make_unique<hotline::ProviderWindow>());
+    manager->AddActionFrontend("hotline", std::move(hotline));
+    manager->AddActionFrontend("panel", std::move(panel));
 	// Main loop
 #ifdef __EMSCRIPTEN__
     // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
@@ -172,8 +174,8 @@ int main(int, char **) {
         }
         ImGui::End();
 
-        //Hotline main input and textInput update cycle
-        if (ImGui::IsKeyPressed(Hotline::hotlineConfig.toggleKey)) {
+        //hotline main input and textInput update cycle
+        if (ImGui::IsKeyPressed(hotline::hotlineConfig.toggleKey)) {
 	       manager->EnableFrontend("hotline"); 
         }
 

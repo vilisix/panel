@@ -11,7 +11,7 @@ Panel::ContextElementGroup::ContextElementGroup() : ContextElement() {}
 
 Panel::ContextElementGroup::ContextElementGroup(const std::string& name) : ContextElement(name) {}
 
-void Panel::ContextElementGroup::Update(Hotline::ActionSet& set) {
+void Panel::ContextElementGroup::Update(hotline::ActionSet& set) {
 	for (const auto& element : _elements) {
 		element.element->Update(set);
 	} 
@@ -33,7 +33,7 @@ Panel::ContextIndexedElementGroup::ContextIndexedElementGroup() : ContextElement
 
 Panel::ContextIndexedElementGroup::ContextIndexedElementGroup(const std::string& name) : ContextElementGroup(name) {}
 
-void Panel::ContextIndexedElementGroup::Update(Hotline::ActionSet& set) {
+void Panel::ContextIndexedElementGroup::Update(hotline::ActionSet& set) {
 	for (int i = 0; i < _elements.size(); i++) {
 		if (ImGui::IsKeyPressed(_elements[i].key)) {
 			_selectedIndex = i;
@@ -72,7 +72,7 @@ Panel::HorizontalTabGroup::HorizontalTabGroup() : ContextElementGroup() {}
 
 Panel::HorizontalTabGroup::HorizontalTabGroup(const std::string& name) : ContextElementGroup(name) {}
 
-void Panel::HorizontalTabGroup::Update(Hotline::ActionSet& set) {
+void Panel::HorizontalTabGroup::Update(hotline::ActionSet& set) {
 	HandleKeyInput();
 	auto contextSize = ImGui::GetContentRegionAvail();
 	ImGui::BeginChild("tabs", {contextSize.x, contextSize.y * contextConfig.horizontalTabHeight}, false,
@@ -151,7 +151,7 @@ Panel::VerticalTabGroup::VerticalTabGroup() : ContextElementGroup() {}
 
 Panel::VerticalTabGroup::VerticalTabGroup(const std::string& name) : ContextElementGroup(name) {}
 
-void Panel::VerticalTabGroup::Update(Hotline::ActionSet& set) {
+void Panel::VerticalTabGroup::Update(hotline::ActionSet& set) {
     HandleKeyInput();
     auto contextSize = ImGui::GetContentRegionAvail();
     ImGui::BeginChild("tabs", {contextSize.x * contextConfig.verticalTabWidth, contextSize.y}, false, contextConfig.childFlags);
@@ -215,7 +215,7 @@ void Panel::VerticalTabGroup::HandleKeyInput() {
 
 Panel::ButtonElement::ButtonElement(const std::string& label, float width, const std::string& action) : _action(action), _label(label), _width(width) {}
 
-void Panel::ButtonElement::Update(Hotline::ActionSet& set) {
+void Panel::ButtonElement::Update(hotline::ActionSet& set) {
     auto contextMax = ImGui::GetContentRegionMax();
     auto buttonBeginPos = ImGui::GetCursorPos();
     if (_key != ImGuiKey_None) {
@@ -254,10 +254,10 @@ void Panel::ButtonElement::Reset() {
 
 Panel::TextElement::TextElement(const std::string &label) : _label(label) {}
 
-void Panel::TextElement::Update(Hotline::ActionSet& set) {
+void Panel::TextElement::Update(hotline::ActionSet& set) {
     ImGui::Text(_label.c_str());
 }
 
-void Panel::SameLineElement::Update(Hotline::ActionSet& set) {
+void Panel::SameLineElement::Update(hotline::ActionSet& set) {
     ImGui::SameLine();
 }

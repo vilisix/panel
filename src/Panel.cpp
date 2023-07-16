@@ -7,7 +7,7 @@ Panel::Panel::Panel() {
     InitFromXml();
 }
 
-void Panel::Panel::Draw(Hotline::ActionSet& set) {
+void Panel::Panel::Draw(hotline::ActionSet& set) {
     HandleKeyInput();
 
     ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, config.childRounding);
