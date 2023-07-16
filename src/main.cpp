@@ -125,7 +125,6 @@ int main(int, char **) {
 
     //  instantiation of hotline
 	Hotline::hotlineConfig.scaleFactor = scaleFactor;
-	Hotline::hotlineConfig.showRecentActions = true;
     // you can modify config as you like here
     auto hotline = std::make_unique<Hotline::Hotline>();
 
