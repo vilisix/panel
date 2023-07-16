@@ -56,7 +56,7 @@ namespace Panel {
         ContextElement();
         explicit ContextElement(const std::string& name);
 		virtual ~ContextElement() = default;
-		virtual void Update() {}
+		virtual void Update(Hotline::ActionSet& set) {}
 		virtual void HandleKeyInput() {}
 		virtual bool IsSelectable() { return false; }
         virtual void Reset() { _isFocused = false; }
@@ -73,26 +73,24 @@ namespace Panel {
     public:
         explicit TextElement(const std::string &label);
 
-        void Update() override;
+        void Update(Hotline::ActionSet& set) override;
     private:
         std::string _label;
 	};
 
     class ButtonElement : public ContextElement {
     public:
-        explicit ButtonElement(const std::string& label, float width, const std::string& action, std::shared_ptr<Hotline::ActionSet> set, std::function<void()> onClose);
+        explicit ButtonElement(const std::string& label, float width, const std::string& action);
 
-        void Update() override;
+        void Update(Hotline::ActionSet& set) override;
         void Reset() override;
         bool IsSelectable() override;
         void SetKey(const std::string& keyStr, ImGuiKey key);
     private:
-        std::shared_ptr<Hotline::ActionSet> _set;
         std::string _action;
         std::string _label;
         std::string _stringKey;
         float _width = 0.5f;
-        std::function<void()> _onCloseCallback;
         ImGuiKey _key = ImGuiKey_None;
 	};
 
@@ -101,7 +99,7 @@ namespace Panel {
         ContextElementGroup();
         explicit ContextElementGroup(const std::string& name);
 
-        void Update() override;
+        void Update(Hotline::ActionSet& set) override;
         void Reset() override;
         virtual void AddElement(const std::string &name, std::shared_ptr<ContextElement> element, const std::string& strKey = "", ImGuiKey hotkey = ImGuiKey_None);
 
@@ -121,7 +119,7 @@ namespace Panel {
         ContextIndexedElementGroup();
         explicit ContextIndexedElementGroup(const std::string& name);
 
-        void Update() override;
+        void Update(Hotline::ActionSet& set) override;
         void AddElement(const std::string &name, std::shared_ptr<ContextElement> element, const std::string& strKey = "", ImGuiKey hotkey = ImGuiKey_None) override;
     protected:
 		int _index = 1;
@@ -131,7 +129,7 @@ namespace Panel {
     public:
         HorizontalTabGroup();
         explicit HorizontalTabGroup(const std::string& name);
-        void Update() override;
+        void Update(Hotline::ActionSet& set) override;
         void HandleKeyInput() override;
 	};
 
@@ -140,11 +138,11 @@ namespace Panel {
         VerticalTabGroup();
         explicit VerticalTabGroup(const std::string& name);
 
-        void Update() override;
+        void Update(Hotline::ActionSet& set) override;
         void HandleKeyInput() override;
 	};
 
     class SameLineElement : public ContextElement {
-        void Update() override;
+        void Update(Hotline::ActionSet& set) override;
     };
 };

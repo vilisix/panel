@@ -2,18 +2,13 @@
 #include <imgui.h>
 #include <memory>
 #include "ContextElement.h"
+#include "IActionFrontend.h"
 
 namespace Hotline {
 	class ActionSet;
 }
 
 namespace Panel {
-	enum State {
-		Inactive,
-		Active,
-		WaitingForAction
-	};
-
 	struct Config {
 		//  main
         ImGuiKey toggleKey = ImGuiKey_F2;
@@ -42,28 +37,19 @@ namespace Panel {
 
 	static Config config;
 
-	class Panel {
+	class Panel : public Hotline::IActionFrontend {
 	public:
-		explicit Panel(std::shared_ptr<Hotline::ActionSet> set);
+		Panel();
 
-		virtual ~Panel() = default;
-
+		void Draw(Hotline::ActionSet& set) override;
+		void Reset() override;
+        void SetExitCallback(std::function<void()> callback) override;
+		
         void InitFromXml();
-		void NormalUpdate();
-		void ActionUpdate();
-		virtual void Update();
-
-		bool IsActive();
-
-		void Reset();
-		void Toggle();
-
 	private:
         void HandleKeyInput();
 
-		State _state = Inactive;
-        std::shared_ptr<Hotline::ActionSet> _set;
-
         std::shared_ptr<ContextElement> _rootElement;
+        std::function<void()> _onExitCallback;
 	};
 }

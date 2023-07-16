@@ -21,6 +21,7 @@
 #include <vector>
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
+#include "ActionManager.h"
 #include "ActionSet.h"
 #include "Hotline.h"
 #include "ArgProvider.h"
@@ -123,11 +124,10 @@ int main(int, char **) {
                          ArgProvider<bool>("IsActive"));
 
     //  instantiation of hotline
-    auto hotlineConfig = std::make_unique<Hotline::Config>();
-    hotlineConfig->scaleFactor = scaleFactor;
-    hotlineConfig->showRecentActions = true;
+	Hotline::hotlineConfig.scaleFactor = scaleFactor;
+	Hotline::hotlineConfig.showRecentActions = true;
     // you can modify config as you like here
-    auto hotline = std::make_unique<Hotline::Hotline>(actionSet, std::move(hotlineConfig));
+    auto hotline = std::make_unique<Hotline::Hotline>();
 
     // for xml path
     std::filesystem::current_path("../");
@@ -136,7 +136,11 @@ int main(int, char **) {
     Panel::contextConfig.scaleFactor = scaleFactor;
     argConfig.scaleFactor = scaleFactor;
 
-    auto panel = std::make_unique<Panel::Panel>(actionSet);
+    auto panel = std::make_unique<Panel::Panel>();
+
+    auto manager = std::make_unique<Hotline::ActionManager>(actionSet);
+    manager->AddFrontend("hotline", std::move(hotline));
+    manager->AddFrontend("panel", std::move(panel));
 	// Main loop
 #ifdef __EMSCRIPTEN__
     // For an Emscripten build we are disabling file-system access, so let's not attempt to do a fopen() of the imgui.ini file.
@@ -170,14 +174,14 @@ int main(int, char **) {
         ImGui::End();
 
         //Hotline main input and textInput update cycle
-        if (!panel->IsActive()) {
-			hotline->Update();
+        if (ImGui::IsKeyPressed(Hotline::hotlineConfig.toggleKey)) {
+	       manager->EnableFrontend("hotline"); 
         }
 
-        //Panel main update cycle
-        if (!hotline->IsActive()) {
-    		panel->Update();
+        if (ImGui::IsKeyPressed(Panel::config.toggleKey)) {
+	       manager->EnableFrontend("panel"); 
         }
+        manager->Update();
 
 
         // Rendering

@@ -11,9 +11,9 @@ Panel::ContextElementGroup::ContextElementGroup() : ContextElement() {}
 
 Panel::ContextElementGroup::ContextElementGroup(const std::string& name) : ContextElement(name) {}
 
-void Panel::ContextElementGroup::Update() {
+void Panel::ContextElementGroup::Update(Hotline::ActionSet& set) {
 	for (const auto& element : _elements) {
-		element.element->Update();
+		element.element->Update(set);
 	} 
 }
 
@@ -33,7 +33,7 @@ Panel::ContextIndexedElementGroup::ContextIndexedElementGroup() : ContextElement
 
 Panel::ContextIndexedElementGroup::ContextIndexedElementGroup(const std::string& name) : ContextElementGroup(name) {}
 
-void Panel::ContextIndexedElementGroup::Update() {
+void Panel::ContextIndexedElementGroup::Update(Hotline::ActionSet& set) {
 	for (int i = 0; i < _elements.size(); i++) {
 		if (ImGui::IsKeyPressed(_elements[i].key)) {
 			_selectedIndex = i;
@@ -44,7 +44,7 @@ void Panel::ContextIndexedElementGroup::Update() {
 			_elements[i].element->SetFocused(false);
 		}
 
-		_elements[i].element->Update();
+		_elements[i].element->Update(set);
 	}
 }
 
@@ -72,7 +72,7 @@ Panel::HorizontalTabGroup::HorizontalTabGroup() : ContextElementGroup() {}
 
 Panel::HorizontalTabGroup::HorizontalTabGroup(const std::string& name) : ContextElementGroup(name) {}
 
-void Panel::HorizontalTabGroup::Update() {
+void Panel::HorizontalTabGroup::Update(Hotline::ActionSet& set) {
 	HandleKeyInput();
 	auto contextSize = ImGui::GetContentRegionAvail();
 	ImGui::BeginChild("tabs", {contextSize.x, contextSize.y * contextConfig.horizontalTabHeight}, false,
@@ -130,7 +130,7 @@ void Panel::HorizontalTabGroup::Update() {
 	ImGui::BeginChild("context", ImGui::GetContentRegionAvail(), true, contextConfig.childFlags);
 	ImGui::SetWindowFontScale(contextConfig.windowFontScale * contextConfig.scaleFactor);
 
-	_elements[_selectedIndex].element->Update();
+	_elements[_selectedIndex].element->Update(set);
 	ImGui::EndChild();
 }
 
@@ -151,7 +151,7 @@ Panel::VerticalTabGroup::VerticalTabGroup() : ContextElementGroup() {}
 
 Panel::VerticalTabGroup::VerticalTabGroup(const std::string& name) : ContextElementGroup(name) {}
 
-void Panel::VerticalTabGroup::Update() {
+void Panel::VerticalTabGroup::Update(Hotline::ActionSet& set) {
     HandleKeyInput();
     auto contextSize = ImGui::GetContentRegionAvail();
     ImGui::BeginChild("tabs", {contextSize.x * contextConfig.verticalTabWidth, contextSize.y}, false, contextConfig.childFlags);
@@ -196,7 +196,7 @@ void Panel::VerticalTabGroup::Update() {
 	ImGui::PushStyleColor(ImGuiCol_Border, contextConfig.tabSelectedColor);
     ImGui::BeginChild("context", ImGui::GetContentRegionAvail(), true, contextConfig.childFlags);
     ImGui::PopStyleColor(2);
-    _elements[_selectedIndex].element->Update();
+    _elements[_selectedIndex].element->Update(set);
     ImGui::EndChild();
 }
 
@@ -213,9 +213,9 @@ void Panel::VerticalTabGroup::HandleKeyInput() {
     }
 }
 
-Panel::ButtonElement::ButtonElement(const std::string& label, float width, const std::string& action, std::shared_ptr<Hotline::ActionSet> set, std::function<void()> onClose) : _action(action), _label(label), _width(width), _onCloseCallback(onClose), _set(set) {}
+Panel::ButtonElement::ButtonElement(const std::string& label, float width, const std::string& action) : _action(action), _label(label), _width(width) {}
 
-void Panel::ButtonElement::Update() {
+void Panel::ButtonElement::Update(Hotline::ActionSet& set) {
     auto contextMax = ImGui::GetContentRegionMax();
     auto buttonBeginPos = ImGui::GetCursorPos();
     if (_key != ImGuiKey_None) {
@@ -232,9 +232,8 @@ void Panel::ButtonElement::Update() {
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, color);
     if (ImGui::Button(_label.c_str(), {contextMax.x * _width, contextMax.y * contextConfig.buttonHeight})
 		|| (IsFocused() && ImGui::IsKeyPressed(ImGuiKey_Enter))) {
-        _set->ExecuteAction(_action);
+        set.ExecuteAction(_action);
 		SetFocused(false);
-        _onCloseCallback();
     }
 
     ImGui::PopStyleColor(3);
@@ -255,10 +254,10 @@ void Panel::ButtonElement::Reset() {
 
 Panel::TextElement::TextElement(const std::string &label) : _label(label) {}
 
-void Panel::TextElement::Update() {
+void Panel::TextElement::Update(Hotline::ActionSet& set) {
     ImGui::Text(_label.c_str());
 }
 
-void Panel::SameLineElement::Update() {
+void Panel::SameLineElement::Update(Hotline::ActionSet& set) {
     ImGui::SameLine();
 }
