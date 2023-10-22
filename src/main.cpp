@@ -109,10 +109,8 @@ int main(int, char **) {
     ImGui_ImplOpenGL3_Init(glsl_version);
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-
-    //  test action set for understanding how it works
     auto actionSet = std::make_shared<hotline::ActionSet>();
-
+    
     actionSet->AddAction("testZeroPar", testFunctionZeroPar);
     actionSet->AddAction("testOnePar", testFunctionOnePar,
                          ArgProvider<std::string>("Name"));
